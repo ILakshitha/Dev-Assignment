@@ -27,26 +27,31 @@ function Login() {
     }
     setLoading(true);
     try {
-      const response = await fetch("https://t5bzetvc0d.execute-api.us-west-2.amazonaws.com/dev/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": "vkEeGJPk4T4LT6QZ5dWaO6so3ofj0gS82jx2uj3L"
-        },
-        body: JSON.stringify({
-          email: username,
-          password: password
-        })
-      });
+      // const response = await fetch("https://t5bzetvc0d.execute-api.us-west-2.amazonaws.com/dev/login", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     "x-api-key": "vkEeGJPk4T4LT6QZ5dWaO6so3ofj0gS82jx2uj3L"
+      //   },
+      //   body: JSON.stringify({
+      //     email: username,
+      //     password: password
+      //   })
+      // });
 
-      const data = await response.json();
+      // const data = await response.json();
 
-      if (!response.ok) {
-        setError(data.message || "Login failed");
+      // if (!response.ok) {
+      //   setError(data.message || "Login failed");
+      // } else {
+      //   navigate("/home", { state: { username: data.name } });
+      // }
+
+      if (username === "admin" && password === "password") {
+        navigate("/home", { state: { username: "Admin User" } });
       } else {
-        // Assuming API returns { name: "User Name", ... }
-        navigate("/home", { state: { username: data.name } });
-      }
+        setError("Invalid username or password");
+      }      
     } catch (err) {
       setError("Network error. Please try again.");
     } finally {
