@@ -17,14 +17,40 @@ function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = () => {
-    // simple validation
-    if (username && password) {
-      setError("");
-      navigate("/home", { state: { username } });
-    } else {
+  const handleLogin = async() => {
+     setError("");
+    if (!username || !password) {
       setError("Please enter username and password");
+      return;
+    }
+    setLoading(true);
+    try {
+      const response = await fetch("https://t5bzetvc0d.execute-api.us-west-2.amazonaws.com/dev/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": "vkEeGJPk4T4LT6QZ5dWaO6so3ofj0gS82jx2uj3L"
+        },
+        body: JSON.stringify({
+          email: username,
+          password: password
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.message || "Login failed");
+      } else {
+        // Assuming API returns { name: "User Name", ... }
+        navigate("/home", { state: { username: data.name } });
+      }
+    } catch (err) {
+      setError("Network error. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -89,8 +115,9 @@ function Login() {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
               onClick={handleLogin}
+              disabled={loading}
             >
-              Sign In
+              {loading ? "Signing In..." : "Sign In"}
             </Button>
           </Box>
         </Paper>
